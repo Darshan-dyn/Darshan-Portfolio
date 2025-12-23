@@ -13,12 +13,19 @@ app.use(express.json());
 app.use(express.static('public')); // Serve static files (resumes, images, etc.)
 
 // Nodemailer Configuration
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
+const transporter = nodemailer.createTransporter({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD
-    }
+    },
+    pool: true,
+    maxConnections: 1,
+    maxMessages: 5,
+    rateDelta: 1000 * 60 * 10, // 10 minutes
+    rateLimit: 5
 });
 
 // ========== CONTACT FORM ENDPOINT ==========
@@ -50,9 +57,8 @@ app.post('/api/contact', async (req, res) => {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'Thank you for contacting Darshan Y N',
+            subject: 'Thank you for contacting me',
             html: `
-        <h2>Thank you for reaching out</h2>
         <p>Hi ${name},</p>
 
         <p>
@@ -77,7 +83,7 @@ app.post('/api/contact', async (req, res) => {
             <b>Darshan Y N</b>
         </p>
         <p style="color:#666; font-size:12px;">
-            My Portfolio: .https:/./portfolio.com.
+            My Portfolio: https://darshan-portfolio-ebon.vercel.app/
         </p>
     `
         });
