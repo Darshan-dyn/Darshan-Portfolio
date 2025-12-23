@@ -2773,32 +2773,40 @@
             submitBtn.textContent = 'Sending...';
 
             try {
-                const BACKEND_URL = 'https://darshan-portfolio-backend.onrender.com';
-                const response = await fetch(`${BACKEND_URL}/api/contact`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, subject, message })
-                });
+                // EmailJSಗೆ data ಕಳಿಸುವದು
+                const result = await emailjs.send(
+                    'service_5htguqr',          // ← Service ID ಇಲ್ಲಿ
+                    'template_4qbfqxa',         // ← ಇಲ್ಲಿ Template ID
+                    {
+                        name: name,
+                        email: email,
+                        title: subject,
+                        message: message
+                    }
+                );
 
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    successMessage.textContent = 'Message sent successfully!';
-                    successMessage.style.display = 'block';
-                    errorMessage.style.display = 'none';
-                    form.reset();
-                } else {
-                    throw new Error(result.message || 'Failed to send message');
-                }
+                // success handling
+                successMessage.textContent = 'Message sent successfully!';
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                form.reset();
             } catch (err) {
-                errorMessage.textContent = 'Error: ' + err.message;
+                errorMessage.textContent = 'Error sending message. Please try again.';
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit';
             }
+
         });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        (function () {
+            emailjs.init('Bl6VDjvKYt7ePkE7B'); // ← ಇಲ್ಲಿ ನಿನ್ನ Public key
+        })();
     </script>
 
 </body>
