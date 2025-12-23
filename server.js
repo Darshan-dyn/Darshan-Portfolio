@@ -13,10 +13,11 @@ app.use(express.json());
 app.use(express.static('public')); // Serve static files (resumes, images, etc.)
 
 // Nodemailer Configuration
-const transporter = nodemailer.createTransporter({
+// Nodemailer Configuration
+const transporter = nodemailer.createTransport({  // ← 'Transport' 
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // true for 465, false for other ports
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD
@@ -24,9 +25,10 @@ const transporter = nodemailer.createTransporter({
     pool: true,
     maxConnections: 1,
     maxMessages: 5,
-    rateDelta: 1000 * 60 * 10, // 10 minutes
+    rateDelta: 1000 * 60 * 10,
     rateLimit: 5
 });
+
 
 // ========== CONTACT FORM ENDPOINT ==========
 app.post('/api/contact', async (req, res) => {
